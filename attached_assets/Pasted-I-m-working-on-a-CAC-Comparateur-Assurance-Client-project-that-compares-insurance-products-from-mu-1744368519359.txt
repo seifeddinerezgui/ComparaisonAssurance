@@ -1,0 +1,89 @@
+I’m working on a CAC (Comparateur Assurance Client) project that compares insurance products from multiple partners. The tool is primarily intended for our internal sales team at Brokins SAS. Currently, we want to integrate one insurer’s API (UTWIN) into the system, and then later expand to include others. The system is developed in FastAPI (backend) and Angular (frontend), with MySQL for data persistence. The tool will also integrate with HubSpot for authentication and lead management.
+
+Key Requirements:
+
+User Authentication and Leads Management:
+
+The system supports two types of authentication:
+
+Traditional Login: Sales users log in using email/password (managed by an internal admin).
+
+HubSpot OAuth Login: Users can optionally authenticate via HubSpot.
+
+Leads are generated externally (e.g., from Comparadise) and then imported into the CAC; until then, we'll create leads manually.
+
+Comparison Engine:
+
+The engine’s purpose is to compare insurance products from different insurers.
+
+Initially, we will implement only the UTWIN integration.
+
+The UTWIN API is SOAP‑based. Its “GetTarif” method requires input classes (e.g., MetaDonnee, ProjetWSModel, EmprunteurWSModel, PretWSModel, PalierModel, OptionsWSModel) and returns output classes (e.g., TarifWsModel, TarifEmprunteurWSModel, TarifPretWsModel, TarifEcheanceWsModel, ErreurValidationWSModel).
+
+These UTWIN data models will be used as DTOs (data transfer objects) for the SOAP requests and responses; they do not need to be persisted directly in our database.
+
+The comparison engine will iterate through all UTWIN product codes, call the UTWIN API for each, and aggregate the results into a unified comparison view.
+
+Integration with HubSpot:
+
+The CAC project is integrated with HubSpot Enterprise.
+
+Leads coming from Comparadise are first received in the CAC, then synchronized with HubSpot.
+
+This integration includes SSO via HubSpot OAuth for sales users and syncing of lead data with the CAC system.
+
+Project (Simulation) Management:
+
+A “project” in this context represents an insurance comparison simulation for a lead.
+
+The simulation project stores the lead’s details, the selected insurance product(s) from UTWIN, and the comparative tariff data.
+
+Projects are linked to leads and users, and include options, tariff results, and status metadata (e.g., created, compared, exported).
+
+Technology Stack:
+
+Backend: FastAPI with SQLAlchemy and MySQL.
+
+API endpoints for authentication, lead management, user management, and comparison processing.
+
+Frontend: Angular 19 with PrimeNG for UI components.
+
+SOAP Integration: Using Zeep for the UTWIN SOAP API.
+
+Migrations: Managed via Alembic.
+
+Environment & Configuration: Variables managed via a .env file and Pydantic settings.
+
+Project Deliverables:
+
+A complete FastAPI backend with:
+
+Authentication endpoints (traditional and HubSpot-based).
+
+Leads endpoints for creating and managing leads.
+
+A comparison engine that calls the UTWIN GetTarif method for each product, aggregates the results, and creates a simulation project.
+
+Proper SQLAlchemy models for persisting users, leads, projects, comparisons, etc.
+
+Pydantic schemas for validating incoming data and serializing outgoing responses.
+
+A SOAP client utility (using Zeep) that interacts with the UTWIN API.
+
+Well-documented configuration and migration setup.
+
+An Angular frontend that:
+
+Provides login functionality (using both traditional and HubSpot methods).
+
+Allows the sales team to view, create, and manage leads.
+
+Displays comparison results from the backend in a user-friendly format.
+
+Additional Notes:
+
+The integration of UTWIN is our first phase; the project will later be extended to include additional insurers (e.g., April, Metlife, Cardif).
+
+The data models provided in the UTWIN documentation do not need to be stored directly in the database; only the relevant simulation project details, leads, and users need persistence.
+
+Please ensure that the code is production-ready with proper error handling, logging, and security practices.
