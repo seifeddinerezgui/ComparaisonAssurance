@@ -1,0 +1,61 @@
+<div class="login-container">
+  <div class="login-form-wrapper">
+    <h2>Login to Your Account</h2>
+    <p>Welcome back! Please enter your credentials to access the CAC Insurance Comparison Tool</p>
+    
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Email</label>
+        <input 
+          type="email" 
+          id="username" 
+          formControlName="username" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
+        />
+        <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+          <div *ngIf="f['username'].errors['required']">Email is required</div>
+          <div *ngIf="f['username'].errors['email']">Enter a valid email address</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+        />
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors['required']">Password is required</div>
+        </div>
+      </div>
+      
+      <div class="form-group login-actions">
+        <button [disabled]="loading" type="submit" class="btn btn-primary login-button">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Login
+        </button>
+        <a routerLink="/auth/register" class="register-link">Don't have an account? Register</a>
+      </div>
+    </form>
+    
+    <div class="social-login">
+      <p class="separator">Or login with</p>
+      <button 
+        type="button" 
+        (click)="loginWithHubSpot()" 
+        [disabled]="loading" 
+        class="btn btn-hubspot">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Connect with HubSpot
+      </button>
+    </div>
+  </div>
+</div>
