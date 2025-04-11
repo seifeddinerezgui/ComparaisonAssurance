@@ -1,0 +1,84 @@
+<div class="projects-container">
+  <div class="projects-header">
+    <h1>Projects</h1>
+    <button class="btn btn-primary" (click)="createNewProject()">
+      <i class="fas fa-plus"></i> New Project
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading projects...</p>
+  </div>
+
+  <div *ngIf="!loading" class="projects-content">
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="projects.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-project-diagram"></i>
+      </div>
+      <h2>No projects found</h2>
+      <p>Start by creating your first loan project for insurance comparison.</p>
+      <button class="btn btn-primary" (click)="createNewProject()">Create Project</button>
+    </div>
+
+    <div *ngIf="projects.length > 0" class="projects-grid">
+      <div *ngFor="let project of projects" class="project-card">
+        <div class="card-header">
+          <h3 class="project-name">{{ project.name }}</h3>
+          <span class="project-status" [ngClass]="'status-' + project.status">{{ project.status }}</span>
+        </div>
+        
+        <div class="card-body">
+          <div class="project-details">
+            <div class="detail-item">
+              <span class="label">Lead:</span>
+              <span class="value">{{ getLeadName(project.lead_id) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Loan Amount:</span>
+              <span class="value">{{ project.loan_amount | currency:'EUR' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Duration:</span>
+              <span class="value">{{ project.loan_duration }} months</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Type:</span>
+              <span class="value">{{ project.loan_type }}</span>
+            </div>
+            <div *ngIf="project.loan_rate" class="detail-item">
+              <span class="label">Rate:</span>
+              <span class="value">{{ project.loan_rate }}%</span>
+            </div>
+          </div>
+          
+          <div class="project-results" *ngIf="project.comparison_results.length > 0">
+            <h4>Comparison Results</h4>
+            <div class="results-summary">
+              <span class="result-count">{{ project.comparison_results.length }} results</span>
+              <span class="best-result">Best: {{ project.comparison_results[0].monthly_premium | currency:'EUR' }}/month</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="runComparison(project.id)">
+            {{ project.comparison_results.length > 0 ? 'View Results' : 'Run Comparison' }}
+          </button>
+          <div class="action-buttons">
+            <button class="action-btn" title="Edit Project">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-btn" title="Delete Project">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

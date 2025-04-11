@@ -1,0 +1,205 @@
+.leads-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.leads-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.leads-header h1 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #3498db;
+  border: 1px solid #3498db;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  padding: 10px 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.empty-state h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.leads-table-container {
+  overflow-x: auto;
+}
+
+.leads-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.leads-table th,
+.leads-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.leads-table thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #eee;
+}
+
+.leads-table th {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.leads-table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.leads-table tbody tr:hover {
+  background-color: #f5f8fa;
+}
+
+.lead-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-new {
+  background-color: #e1f5fe;
+  color: #0288d1;
+}
+
+.status-contacted {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.status-qualified {
+  background-color: #e0f2f1;
+  color: #00796b;
+}
+
+.status-converted {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+  margin-right: 4px;
+}
+
+.action-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.view-btn:hover {
+  color: #3498db;
+}
+
+.edit-btn:hover {
+  color: #f39c12;
+}
+
+.projects-btn:hover {
+  color: #2ecc71;
+}
+
+.hubspot-btn:hover {
+  color: #e74c3c;
+}
