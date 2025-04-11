@@ -8,7 +8,7 @@ import { Lead, LeadCreate, LeadUpdate, LeadSyncRequest } from '../models/lead.mo
   providedIn: 'root'
 })
 export class LeadService {
-  private apiUrl = `${environment.apiUrl}/leads`;
+  private apiUrl = `${environment.apiBaseUrl}/api/leads`;
 
   constructor(private http: HttpClient) { }
 

@@ -8,8 +8,8 @@ import { Project, ProjectCreate, ProjectUpdate, ComparisonRequest, ComparisonRes
   providedIn: 'root'
 })
 export class ProjectService {
-  private apiUrl = `${environment.apiUrl}/projects`;
-  private comparisonUrl = `${environment.apiUrl}/comparison`;
+  private apiUrl = `${environment.apiBaseUrl}/api/projects`;
+  private comparisonUrl = `${environment.apiBaseUrl}/api/comparison`;
 
   constructor(private http: HttpClient) { }
 

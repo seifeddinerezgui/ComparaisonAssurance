@@ -19,6 +19,21 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'leads',
+    loadChildren: () => import('./features/leads/leads.module').then(m => m.LeadsModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'projects',
+    loadChildren: () => import('./features/projects/projects.module').then(m => m.ProjectsModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'comparison',
+    loadChildren: () => import('./features/comparison/comparison.module').then(m => m.ComparisonModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'
