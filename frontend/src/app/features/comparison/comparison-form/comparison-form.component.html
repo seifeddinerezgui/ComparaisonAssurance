@@ -1,0 +1,201 @@
+<div class="comparison-form-container">
+  <p-toast></p-toast>
+  
+  <div class="header">
+    <h1>New Comparison</h1>
+  </div>
+  
+  <div *ngIf="loading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Loading project data...</p>
+  </div>
+  
+  <div *ngIf="!loading && project" class="content">
+    <p-panel header="Project Information">
+      <div class="project-info">
+        <div class="info-item">
+          <label>Project Name:</label>
+          <span>{{ project.name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Loan Amount:</label>
+          <span>{{ project.loan_amount | currency:'EUR' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Loan Duration:</label>
+          <span>{{ project.loan_duration }} months</span>
+        </div>
+        <div class="info-item">
+          <label>Loan Type:</label>
+          <span>{{ project.loan_type }}</span>
+        </div>
+      </div>
+    </p-panel>
+    
+    <form [formGroup]="comparisonForm" (ngSubmit)="onSubmit()">
+      <p-panel header="Insurance Guarantees">
+        <p class="instructions">Select the insurance guarantees you want to include in the comparison:</p>
+        
+        <div class="guarantees-list">
+          <div *ngFor="let product of utwinProductOptions; let i = index" class="guarantee-item">
+            <p-checkbox 
+              [formArrayName]="'guarantees'" 
+              [value]="true" 
+              [inputId]="'guarantee_' + i"
+              [index]="i"
+            ></p-checkbox>
+            <label [for]="'guarantee_' + i">{{ product.label }}</label>
+          </div>
+        </div>
+      </p-panel>
+      
+      <p-panel header="Coverage Options">
+        <div class="options-container">
+          <div class="option-item">
+            <label for="coverage_rate">Coverage Rate (%)</label>
+            <p-inputNumber
+              id="coverage_rate"
+              formControlName="coverage_rate"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              spinnerMode="horizontal"
+              [min]="1"
+              [max]="100"
+              [step]="5"
+              decrementButtonClass="p-button-secondary"
+              incrementButtonClass="p-button-secondary"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              suffix="%"
+              [ngClass]="{'ng-invalid ng-dirty': comparisonForm.get('coverage_rate')?.touched && comparisonForm.get('coverage_rate')?.invalid}"
+            ></p-inputNumber>
+            <small *ngIf="comparisonForm.get('coverage_rate')?.touched && comparisonForm.get('coverage_rate')?.invalid" class="p-error">
+              Coverage rate must be between 1% and 100%
+            </small>
+          </div>
+        </div>
+      </p-panel>
+      
+      <div class="form-actions">
+        <button 
+          pButton 
+          pRipple 
+          type="button" 
+          label="Cancel" 
+          class="p-button-outlined" 
+          (click)="cancel()"
+          [disabled]="submitting"
+        ></button>
+        <button 
+          pButton 
+          pRipple 
+          type="submit" 
+          label="Run Comparison" 
+          icon="pi pi-sync" 
+          class="p-button-primary" 
+          [disabled]="submitting"
+        ></button>
+        <p-progressSpinner *ngIf="submitting" styleClass="form-spinner"></p-progressSpinner>
+      </div>
+    </form>
+  </div>
+  
+  <div *ngIf="!loading && !project" class="error-container">
+    <p>Project not found or you don't have permission to view it.</p>
+    <button 
+      pButton 
+      pRipple 
+      label="Back to Projects" 
+      icon="pi pi-arrow-left" 
+      routerLink="/projects"
+    ></button>
+  </div>
+</div>
+
+<style>
+  .comparison-form-container {
+    padding: 20px;
+  }
+  
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .project-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-item label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #666;
+  }
+  
+  .instructions {
+    margin-bottom: 15px;
+    font-style: italic;
+  }
+  
+  .guarantees-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+  }
+  
+  .guarantee-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .options-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .option-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .option-item label {
+    font-weight: 500;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .form-spinner {
+    width: 25px;
+    height: 25px;
+  }
+</style>

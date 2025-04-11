@@ -1,0 +1,230 @@
+<div class="comparison-results-container">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+  
+  <div class="header">
+    <div class="title-section">
+      <h1>Comparison Results</h1>
+      <span *ngIf="project">for {{ project.name }}</span>
+    </div>
+    
+    <div class="actions">
+      <button 
+        pButton 
+        pRipple 
+        label="Back to Project" 
+        icon="pi pi-arrow-left" 
+        class="p-button-outlined" 
+        (click)="backToProject()"
+      ></button>
+      <button 
+        pButton 
+        pRipple 
+        label="New Comparison" 
+        icon="pi pi-sync" 
+        class="p-button-primary" 
+        (click)="newComparison()"
+      ></button>
+      <button 
+        pButton 
+        pRipple 
+        label="Delete Results" 
+        icon="pi pi-trash" 
+        class="p-button-danger" 
+        (click)="deleteResults()"
+        [disabled]="deletingResults"
+      ></button>
+      <p-progressSpinner *ngIf="deletingResults" styleClass="delete-spinner"></p-progressSpinner>
+    </div>
+  </div>
+  
+  <div *ngIf="loading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Loading comparison results...</p>
+  </div>
+  
+  <div *ngIf="!loading && project && comparisonResults.length > 0" class="content">
+    <p-panel header="Premium Comparison Chart">
+      <div class="chart-container">
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="400px"></p-chart>
+      </div>
+    </p-panel>
+    
+    <p-panel header="Detailed Comparison Results">
+      <p-table 
+        [value]="comparisonResults" 
+        styleClass="p-datatable-striped p-datatable-gridlines"
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Product</th>
+            <th>Insurer</th>
+            <th>Monthly Premium</th>
+            <th>Annual Premium</th>
+            <th>Total Premium</th>
+            <th>Coverage %</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-result>
+          <tr>
+            <td>{{ result.product_name }}</td>
+            <td>{{ result.insurer }}</td>
+            <td>{{ result.monthly_premium | currency:'EUR' }}</td>
+            <td>{{ result.annual_premium | currency:'EUR' }}</td>
+            <td>{{ result.total_premium | currency:'EUR' }}</td>
+            <td>{{ result.coverage_percentage }}%</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-panel>
+    
+    <div class="result-details">
+      <p-tabView>
+        <p-tabPanel *ngFor="let result of comparisonResults" [header]="result.product_name">
+          <div class="detail-panel">
+            <h3>{{ result.product_name }} ({{ result.insurer }})</h3>
+            
+            <div class="detail-section">
+              <h4>Premium Details</h4>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <label>Monthly Premium:</label>
+                  <span>{{ result.monthly_premium | currency:'EUR' }}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Annual Premium:</label>
+                  <span>{{ result.annual_premium | currency:'EUR' }}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Total Premium:</label>
+                  <span>{{ result.total_premium | currency:'EUR' }}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Coverage Percentage:</label>
+                  <span>{{ result.coverage_percentage }}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h4>Coverage Details</h4>
+              <div class="detail-grid" *ngIf="result.coverage_details">
+                <div class="detail-item" *ngFor="let item of result.coverage_details | keyvalue">
+                  <label>{{ item.key | titlecase }}:</label>
+                  <span>{{ item.value }}</span>
+                </div>
+              </div>
+              <p *ngIf="!result.coverage_details">No detailed coverage information available.</p>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+  
+  <div *ngIf="!loading && project && comparisonResults.length === 0" class="no-results">
+    <p>No comparison results found for this project.</p>
+    <p>Run a new comparison to see results here.</p>
+    <button 
+      pButton 
+      pRipple 
+      label="Run New Comparison" 
+      icon="pi pi-sync" 
+      (click)="newComparison()"
+    ></button>
+  </div>
+  
+  <div *ngIf="!loading && !project" class="error-container">
+    <p>Project not found or you don't have permission to view it.</p>
+    <button 
+      pButton 
+      pRipple 
+      label="Back to Projects" 
+      icon="pi pi-arrow-left" 
+      routerLink="/projects"
+    ></button>
+  </div>
+</div>
+
+<style>
+  .comparison-results-container {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .title-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .title-section h1 {
+    margin-bottom: 5px;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .loading-container, .error-container, .no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .chart-container {
+    padding: 10px;
+  }
+  
+  .result-details {
+    margin-top: 20px;
+  }
+  
+  .detail-panel {
+    padding: 10px;
+  }
+  
+  .detail-section {
+    margin-bottom: 20px;
+  }
+  
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-item label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #666;
+  }
+  
+  .delete-spinner {
+    width: 25px;
+    height: 25px;
+  }
+</style>

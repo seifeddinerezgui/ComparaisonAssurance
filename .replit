@@ -1,0 +1,61 @@
+modules = ["python-3.11", "nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend FastAPI Server"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend Angular Server"
+
+[[workflows.workflow]]
+name = "Backend FastAPI Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pymysql pydantic python-jose[cryptography] passlib python-multipart httpx zeep alembic && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+waitForPort = 8000
+
+[[workflows.workflow]]
+name = "Frontend Angular Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./frontend/start-express.sh"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "cd backend && pip install -r requirements.txt || pip install fastapi uvicorn sqlalchemy pymysql pydantic python-jose[cryptography] passlib python-multipart httpx zeep alembic && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[[ports]]
+localPort = 8000
+externalPort = 80

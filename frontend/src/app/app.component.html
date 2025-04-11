@@ -1,0 +1,15 @@
+<div class="app-container">
+  <app-navbar *ngIf="isAuthenticated" 
+    [sidebarVisible]="sidebarVisible" 
+    (toggleSidebar)="toggleSidebar()"
+    (logout)="logout()">
+  </app-navbar>
+
+  <div class="content-container" [ngClass]="{'with-sidebar': sidebarVisible && isAuthenticated}">
+    <app-sidebar *ngIf="isAuthenticated && sidebarVisible"></app-sidebar>
+    
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

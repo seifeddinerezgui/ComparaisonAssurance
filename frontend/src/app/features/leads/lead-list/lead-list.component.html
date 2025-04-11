@@ -1,0 +1,231 @@
+<div class="lead-list-container">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+  
+  <div class="header">
+    <h1>Leads</h1>
+    <button pButton pRipple label="Create New Lead" icon="pi pi-plus" (click)="createLead()"></button>
+  </div>
+  
+  <div class="search-bar">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input 
+        type="text" 
+        pInputText 
+        [(ngModel)]="searchTerm" 
+        placeholder="Search leads..." 
+        (keyup.enter)="onSearch()"
+      />
+    </span>
+    <button 
+      pButton 
+      pRipple 
+      type="button" 
+      label="Search" 
+      icon="pi pi-search" 
+      (click)="onSearch()"
+      class="p-button-outlined"
+    ></button>
+    <button 
+      pButton 
+      pRipple 
+      type="button" 
+      label="Clear" 
+      icon="pi pi-times" 
+      (click)="clearSearch()"
+      class="p-button-outlined p-button-secondary"
+    ></button>
+  </div>
+  
+  <div class="table-container">
+    <p-table 
+      [value]="leads" 
+      [paginator]="true" 
+      [rows]="10" 
+      [rowsPerPageOptions]="[5, 10, 25, 50]"
+      [loading]="loading" 
+      styleClass="p-datatable-striped p-datatable-gridlines"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="last_name">Name <p-sortIcon field="last_name"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+          <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+          <th>HubSpot Sync</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-lead>
+        <tr>
+          <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+          <td>{{ lead.email }}</td>
+          <td>{{ lead.phone }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(lead.status)">
+              {{ lead.status }}
+            </span>
+          </td>
+          <td>
+            <span *ngIf="lead.hubspot_sync_status === 'synced'" class="sync-status synced">
+              <i class="pi pi-check-circle"></i> Synced
+            </span>
+            <span *ngIf="lead.hubspot_sync_status === 'pending'" class="sync-status pending">
+              <i class="pi pi-clock"></i> Pending
+            </span>
+            <span *ngIf="lead.hubspot_sync_status === 'failed'" class="sync-status failed">
+              <i class="pi pi-times-circle"></i> Failed
+            </span>
+            <span *ngIf="!lead.hubspot_sync_status" class="sync-status not-synced">
+              <i class="pi pi-cloud-upload"></i> Not Synced
+            </span>
+          </td>
+          <td>
+            <button 
+              pButton 
+              pRipple 
+              icon="pi pi-eye" 
+              class="p-button-rounded p-button-text" 
+              (click)="viewLead(lead)"
+              pTooltip="View Details"
+            ></button>
+            <button 
+              pButton 
+              pRipple 
+              icon="pi pi-pencil" 
+              class="p-button-rounded p-button-text" 
+              (click)="editLead(lead)"
+              pTooltip="Edit"
+            ></button>
+            <button 
+              pButton 
+              pRipple 
+              icon="pi pi-trash" 
+              class="p-button-rounded p-button-text p-button-danger" 
+              (click)="deleteLead(lead)"
+              pTooltip="Delete"
+            ></button>
+            <button 
+              pButton 
+              pRipple 
+              icon="pi pi-cloud-upload" 
+              class="p-button-rounded p-button-text p-button-info" 
+              (click)="syncToHubspot(lead)"
+              pTooltip="Sync to HubSpot"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-message">
+            <div *ngIf="loading">
+              <p-progressSpinner></p-progressSpinner>
+              <p>Loading leads...</p>
+            </div>
+            <div *ngIf="!loading">
+              <p>No leads found. Create a new lead to get started.</p>
+              <button 
+                pButton 
+                pRipple 
+                label="Create New Lead" 
+                icon="pi pi-plus" 
+                (click)="createLead()"
+                class="p-button-outlined"
+              ></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<style>
+  .lead-list-container {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    width: 300px;
+  }
+  
+  .table-container {
+    margin-top: 20px;
+  }
+  
+  .empty-message {
+    text-align: center;
+    padding: 40px;
+  }
+  
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .status-new {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+  }
+  
+  .status-contacted {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+  }
+  
+  .status-qualified {
+    background-color: #fff8e1;
+    color: #ff6f00;
+  }
+  
+  .status-converted {
+    background-color: #e8eaf6;
+    color: #303f9f;
+  }
+  
+  .status-default {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+  
+  .sync-status {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .synced {
+    color: #4caf50;
+  }
+  
+  .pending {
+    color: #ff9800;
+  }
+  
+  .failed {
+    color: #f44336;
+  }
+  
+  .not-synced {
+    color: #9e9e9e;
+  }
+</style>

@@ -1,0 +1,21 @@
+<div class="callback-container">
+  <p-card header="HubSpot Authentication">
+    <p-messages></p-messages>
+    
+    <div class="content" *ngIf="loading">
+      <p>Authenticating with HubSpot...</p>
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+    
+    <div class="content" *ngIf="!loading && !error">
+      <p>Authentication successful!</p>
+      <p>Redirecting to the application...</p>
+    </div>
+    
+    <div class="content" *ngIf="!loading && error">
+      <p>Authentication failed.</p>
+      <p>{{ errorMessage }}</p>
+      <p>Redirecting to login page...</p>
+    </div>
+  </p-card>
+</div>
