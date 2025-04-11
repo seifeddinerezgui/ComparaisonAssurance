@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:8000'
+  apiBaseUrl: '/api' // In production, API calls will be proxied to the same domain
 };

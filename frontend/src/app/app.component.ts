@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from './core/auth/auth.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,34 +7,14 @@ import { AuthService } from './core/auth/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'CAC - Insurance Comparison Tool';
-  isAuthenticated = false;
-  sidebarVisible = true;
+  title = 'CAC - Comparateur Assurance Client';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.authService.isAuthenticated$.subscribe(
-      isAuthenticated => {
-        this.isAuthenticated = isAuthenticated;
-        
-        // Redirect to login if not authenticated
-        if (!isAuthenticated && !this.router.url.includes('/auth/')) {
-          this.router.navigate(['/auth/login']);
-        }
-      }
-    );
-  }
-
-  toggleSidebar(): void {
-    this.sidebarVisible = !this.sidebarVisible;
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
+    // Load the current user if a token exists
+    if (this.authService.getToken()) {
+      this.authService.loadCurrentUser().subscribe();
+    }
   }
 }

@@ -1,0 +1,16 @@
+<div class="callback-container">
+  <div class="callback-content">
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <h2>Processing HubSpot Authentication</h2>
+      <p>Please wait while we complete your authentication...</p>
+    </div>
+    
+    <div *ngIf="!loading && error" class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h2>Authentication Error</h2>
+      <p>{{ error }}</p>
+      <a routerLink="/auth/login" class="btn btn-primary">Back to Login</a>
+    </div>
+  </div>
+</div>
