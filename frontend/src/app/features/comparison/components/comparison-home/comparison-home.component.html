@@ -1,0 +1,70 @@
+<div class="comparison-container">
+  <div class="comparison-header">
+    <h1>Insurance Comparison</h1>
+    <p>Compare insurance offers from multiple providers for your loan project</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading projects...</p>
+  </div>
+
+  <div *ngIf="!loading" class="comparison-content">
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="projects.length === 0" class="empty-state">
+      <h3>No projects available</h3>
+      <p>You need to create a project before running a comparison.</p>
+      <a routerLink="/projects/create" class="btn btn-primary">Create a Project</a>
+    </div>
+
+    <form *ngIf="projects.length > 0" [formGroup]="selectionForm" (ngSubmit)="runComparison()" class="comparison-form">
+      <div class="form-group">
+        <label for="projectSelect">Select a Project:</label>
+        <select 
+          id="projectSelect" 
+          class="form-control" 
+          formControlName="projectId"
+          (change)="onProjectSelect($event)">
+          <option value="">-- Select a project --</option>
+          <option *ngFor="let project of projects" [value]="project.id">
+            {{ project.name }} ({{ getLeadName(project.lead_id) }})
+          </option>
+        </select>
+        <div *ngIf="selectionForm.get('projectId')?.touched && selectionForm.get('projectId')?.invalid" class="validation-error">
+          Please select a project.
+        </div>
+      </div>
+
+      <div *ngIf="selectedProject" class="project-details">
+        <h3>Project Details</h3>
+        <div class="detail-row">
+          <span class="detail-label">Loan Amount:</span>
+          <span class="detail-value">{{ selectedProject.loan_amount | currency:'EUR' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Duration:</span>
+          <span class="detail-value">{{ selectedProject.loan_duration }} months</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Type:</span>
+          <span class="detail-value">{{ selectedProject.loan_type }}</span>
+        </div>
+        <div *ngIf="selectedProject.loan_rate" class="detail-row">
+          <span class="detail-label">Rate:</span>
+          <span class="detail-value">{{ selectedProject.loan_rate }}%</span>
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="selectionForm.invalid || submitting">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+        {{ submitting ? 'Running comparison...' : 'Run Comparison' }}
+      </button>
+    </form>
+  </div>
+</div>

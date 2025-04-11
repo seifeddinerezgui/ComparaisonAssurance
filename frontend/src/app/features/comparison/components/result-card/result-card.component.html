@@ -1,0 +1,56 @@
+<div class="result-card" [ngStyle]="{'border-top-color': getInsurerColor(result.insurer)}">
+  <div class="card-header">
+    <h3 class="insurer-name">{{ result.insurer }}</h3>
+    <div class="product-name">{{ result.product_name }}</div>
+  </div>
+  
+  <div class="card-body">
+    <div class="premium-info">
+      <div class="premium-monthly">
+        <span class="label">Monthly</span>
+        <span class="value">{{ result.monthly_premium | currency:'EUR' }}</span>
+      </div>
+      <div class="premium-annual">
+        <span class="label">Annually</span>
+        <span class="value">{{ result.annual_premium | currency:'EUR' }}</span>
+      </div>
+      <div class="premium-total">
+        <span class="label">Total</span>
+        <span class="value">{{ result.total_premium | currency:'EUR' }}</span>
+      </div>
+    </div>
+    
+    <div class="coverage-info">
+      <div class="coverage-percentage">
+        <span class="label">Coverage</span>
+        <span class="value">{{ result.coverage_percentage }}%</span>
+      </div>
+      <div class="coverage-bar">
+        <div class="coverage-fill" [style.width.%]="result.coverage_percentage"></div>
+      </div>
+    </div>
+    
+    <button class="details-toggle" (click)="toggleDetails()">
+      {{ showDetails ? 'Hide Details' : 'Show Details' }}
+      <i class="fas" [ngClass]="showDetails ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+    </button>
+    
+    <div *ngIf="showDetails" class="details-panel">
+      <h4>Coverage Details</h4>
+      <div *ngIf="result.coverage_details" class="coverage-details">
+        <div *ngFor="let item of result.coverage_details | keyvalue" class="detail-item">
+          <span class="label">{{ item.key }}</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+      </div>
+      <div *ngIf="!result.coverage_details" class="no-details">
+        No detailed coverage information available.
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-footer">
+    <button class="btn btn-primary">Export Quote</button>
+    <button class="btn btn-outline">Share</button>
+  </div>
+</div>

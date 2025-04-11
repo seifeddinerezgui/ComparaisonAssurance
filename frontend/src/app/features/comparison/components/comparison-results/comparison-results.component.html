@@ -1,0 +1,86 @@
+<div class="results-container">
+  <div class="results-header">
+    <h1>Insurance Comparison Results</h1>
+    <a routerLink="/comparison" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to Comparison
+    </a>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading results...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && project" class="results-content">
+    <div class="project-summary">
+      <div class="summary-section">
+        <h3>Project Details</h3>
+        <div class="detail-row">
+          <span class="detail-label">Name:</span>
+          <span class="detail-value">{{ project.name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Loan Amount:</span>
+          <span class="detail-value">{{ project.loan_amount | currency:'EUR' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Duration:</span>
+          <span class="detail-value">{{ project.loan_duration }} months</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Type:</span>
+          <span class="detail-value">{{ project.loan_type }}</span>
+        </div>
+        <div *ngIf="project.loan_rate" class="detail-row">
+          <span class="detail-label">Rate:</span>
+          <span class="detail-value">{{ project.loan_rate }}%</span>
+        </div>
+      </div>
+
+      <div *ngIf="lead" class="summary-section">
+        <h3>Lead Information</h3>
+        <div class="detail-row">
+          <span class="detail-label">Name:</span>
+          <span class="detail-value">{{ lead.first_name }} {{ lead.last_name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value">{{ lead.email }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Phone:</span>
+          <span class="detail-value">{{ lead.phone }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn btn-primary" (click)="runNewComparison()">Run New Comparison</button>
+      <div class="sort-options">
+        <span>Sort by:</span>
+        <button class="sort-btn" (click)="sortByMonthlyPremium()">Monthly Premium</button>
+        <button class="sort-btn" (click)="sortByAnnualPremium()">Annual Premium</button>
+        <button class="sort-btn" (click)="sortByTotalPremium()">Total Premium</button>
+        <button class="sort-btn" (click)="sortByCoveragePercentage()">Coverage</button>
+      </div>
+    </div>
+
+    <div *ngIf="results.length === 0" class="empty-results">
+      <h3>No comparison results found</h3>
+      <p>There are no insurance offers available for this project.</p>
+      <button class="btn btn-primary" (click)="runNewComparison()">Try Another Project</button>
+    </div>
+
+    <div *ngIf="results.length > 0" class="results-grid">
+      <app-result-card 
+        *ngFor="let result of results" 
+        [result]="result"
+        [projectName]="project.name">
+      </app-result-card>
+    </div>
+  </div>
+</div>
